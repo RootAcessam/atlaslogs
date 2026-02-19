@@ -1,0 +1,9 @@
+name = "atlaslogs"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-02-19"
+
+[env.production]
+vars = { 
+  VITE_SUPABASE_URL = "https://rktjjxrmwzfiiuvvocfl.supabase.co",
+  VITE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJrdGpqeHJtd3pmaWl1dnZvY2ZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEzODk5OTksImV4cCI6MjA4Njk2NTk5OX0.n4bM9aizP9bFl9gyRhqirQtxuLp2ada-ulJ003ymQsk"
+}
