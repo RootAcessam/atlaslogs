@@ -1,154 +1,273 @@
 # ATLAS LOGS - Sistema de Gestão de Fulfillment
 
-Sistema completo de gestão de fulfillment com dois painéis separados: Admin e Lojista.
+ATLAS LOGS é um sistema de gestão de fulfillment projetado para controlar operações de estoque, pedidos e logística em um único ambiente.  
+A aplicação possui dois painéis principais: **Admin** e **Lojista**, permitindo que diferentes usuários tenham acesso a funcionalidades específicas conforme seu papel no sistema.
 
-## Características Principais
+O objetivo do projeto é centralizar o fluxo completo de pedidos, desde o lançamento da venda até a separação, embalagem e envio.
 
-### Painel Admin (admin@atlaslogs.com)
+---
+
+# Tecnologias Utilizadas
+
+**Frontend**
+- React
+- TypeScript
+- Vite
+- TailwindCSS
+
+**Backend**
+- Supabase
+- PostgreSQL
+- Supabase Auth
+- Supabase Edge Functions
+
+**UI**
+- Componentes customizados
+- Lucide React (ícones)
+
+**Deploy**
+- Vercel
+
+---
+
+# Demonstração
+
+Caso o sistema esteja publicado:
+
+```
+https://seu-projeto.vercel.app
+```
+
+---
+
+# Estrutura Geral do Sistema
+
+O sistema possui dois ambientes principais.
+
+## Painel Admin
+
+Usuário administrador possui controle completo sobre a operação.
+
+Funcionalidades:
+
 - Dashboard executivo com KPIs em tempo real
+- Monitoramento de pedidos
 - Fila de separação de pedidos
 - Gestão completa de lojistas
-- Estoque completo de todos os produtos
+- Controle de estoque global
 - Sistema de notificações em tempo real
-- Controle total do fluxo de pedidos
+- Controle completo do fluxo logístico
 
-### Painel Lojista
+Login administrativo esperado:
+
+```
+admin@atlaslogs.com
+```
+
+---
+
+## Painel Lojista
+
+Cada lojista possui acesso somente aos próprios dados.
+
+Funcionalidades:
+
 - Dashboard personalizado
-- Gestão completa de produtos (CRUD)
-- Lançamento de vendas de marketplaces externos
+- Cadastro e gestão de produtos
+- Lançamento de vendas externas (marketplaces)
 - Acompanhamento de pedidos
 - Movimentação manual de estoque
-- Notificações de eventos importantes
+- Recebimento de notificações importantes
 
-## Tecnologias
+---
 
-- **Frontend**: React + TypeScript + Vite + Tailwind CSS
-- **Backend**: Supabase (PostgreSQL + Auth + Edge Functions)
-- **UI**: Componentes customizados com design premium
-- **Ícones**: Lucide React
+# Instalação Local
 
-## Configuração
+Clone o repositório:
 
-### 1. Configurar Variáveis de Ambiente
+```bash
+git clone https://github.com/seuusuario/atlaslogs.git
+```
 
-Edite o arquivo `.env` com suas credenciais do Supabase:
+Entre na pasta do projeto:
 
-```env
+```bash
+cd atlaslogs
+```
+
+Instale as dependências:
+
+```bash
+npm install
+```
+
+Inicie o servidor de desenvolvimento:
+
+```bash
+npm run dev
+```
+
+---
+
+# Variáveis de Ambiente
+
+Crie um arquivo `.env` na raiz do projeto.
+
+```
 VITE_SUPABASE_URL=sua-url-do-supabase
 VITE_SUPABASE_ANON_KEY=sua-chave-anon
 ```
 
-### 2. Criar Usuário Admin
+Essas credenciais podem ser encontradas no painel do Supabase.
 
-Execute no SQL Editor do Supabase:
+---
 
-```sql
--- Criar usuário admin (substitua o email e senha)
--- O email DEVE ser admin@atlaslogs.com para ter acesso admin
-INSERT INTO auth.users (email, encrypted_password, email_confirmed_at, created_at, updated_at)
-VALUES (
-  'admin@atlaslogs.com',
-  crypt('SuaSenhaSegura123', gen_salt('bf')),
-  NOW(),
-  NOW(),
-  NOW()
-);
+# Estrutura do Banco de Dados
+
+O sistema utiliza PostgreSQL via Supabase.
+
+Principais tabelas:
+
+- `lojistas`
+- `produtos_estoque`
+- `pedidos`
+- `itens_pedido`
+- `movimentacoes_estoque`
+- `historico_pedido`
+- `notificacoes`
+
+Essas tabelas controlam toda a operação logística da aplicação.
+
+---
+
+# Segurança
+
+O sistema utiliza **Row Level Security (RLS)** para proteger os dados.
+
+Regras principais:
+
+- Lojistas acessam apenas seus próprios registros
+- Administradores possuem acesso ampliado conforme regras da aplicação
+- Políticas restritivas por padrão
+
+---
+
+# Fluxo de Pedidos
+
+Fluxo padrão da operação:
+
+1. Lojista registra uma venda
+2. Sistema reduz automaticamente o estoque
+3. Pedido entra na fila de separação
+4. Admin inicia separação
+5. Pedido é embalado
+6. Pedido é enviado com código de rastreio
+
+Status de pedido:
+
+```
+Aguardando separação
+Em separação
+Embalado
+Enviado
 ```
 
-### 3. Criar Lojistas
+---
 
-Use o painel admin para criar novos lojistas. Cada lojista terá acesso apenas aos seus próprios dados.
+# Sistema de Notificações
 
-## Funcionalidades Detalhadas
+O sistema possui notificações internas em tempo real.
 
-### Lançamento de Vendas
-1. Lojista acessa "Lançar Venda"
-2. Seleciona produtos e quantidades
-3. Preenche dados do cliente
-4. Sistema automaticamente:
-   - Reduz estoque
-   - Cria pedido com status "aguardando separação"
-   - Dispara notificação para o admin
-   - Registra movimentação de estoque
+Eventos já implementados:
 
-### Fluxo de Separação (Admin)
-1. **Aguardando Separação**: Pedido na fila
-2. **Em Separação**: Admin iniciou a separação
-3. **Embalado**: Produto embalado e pronto para envio
-4. **Enviado**: Código de rastreio informado
+- Novo pedido lançado
+- Pedido enviado
+- Estoque baixo
+- Produto sem localização no armazém
 
-### Sistema de Notificações
-- Notificações in-app em tempo real
-- Badge com contador no menu
-- Edge Function preparada para envio de emails
-- Estrutura pronta para WhatsApp/Telegram/SMS
+A estrutura também permite envio futuro de:
 
-## Design
+- Email
+- WhatsApp
+- Telegram
+- SMS
 
-### Paleta de Cores
-- Fundo: `#0A0A0A` (preto profundo)
-- Cards: `#121212` (preto elevado)
-- Bordas: `#1F1F1F`
-- Destaque: `#E11D48` (vermelho)
-- Texto: `#FFFFFF` (branco) e `#A0A0A0` (cinza)
+---
 
-### Componentes
-- Cards com bordas arredondadas e sombras
-- Badges coloridos para status
-- Modais responsivos
+# Design do Sistema
+
+Paleta utilizada:
+
+```
+Fundo principal: #0A0A0A
+Cards: #121212
+Bordas: #1F1F1F
+Destaque: #E11D48
+Texto principal: #FFFFFF
+Texto secundário: #A0A0A0
+```
+
+Características visuais:
+
+- Interface escura
+- Cards elevados
+- Componentes responsivos
+- Badges de status
 - Transições suaves
 - Loading states
 
-## Estrutura do Banco de Dados
+---
 
-### Tabelas Principais
-- `lojistas`: Dados dos lojistas
-- `produtos_estoque`: Produtos no armazém
-- `pedidos`: Pedidos de vendas
-- `itens_pedido`: Produtos de cada pedido
-- `movimentacoes_estoque`: Histórico de movimentações
-- `historico_pedido`: Timeline de status
-- `notificacoes`: Notificações do sistema
+# Estrutura do Projeto
 
-### Segurança (RLS)
-Todas as tabelas possuem Row Level Security habilitado:
-- Lojistas acessam apenas seus dados
-- Admin tem acesso total via service role
-- Políticas restritivas por padrão
+```
+atlaslogs
+│
+├── src
+├── public
+├── supabase
+├── package.json
+├── vite.config.ts
+├── tailwind.config.js
+├── vercel.json
+└── README.md
+```
 
-## Como Usar
+---
 
-### Lojista
-1. Faça login com suas credenciais
-2. Cadastre seus produtos em "Meus Produtos"
-3. Quando vender em marketplace externo, use "Lançar Venda"
-4. Acompanhe seus pedidos em "Meus Pedidos"
-5. Receba notificações quando pedidos forem enviados
+# Próximas Funcionalidades
 
-### Admin
-1. Faça login como admin@atlaslogs.com
-2. Gerencie lojistas em "Lojistas"
-3. Monitore fila de separação
-4. Processe pedidos: separar → embalar → enviar
-5. Defina localização física dos produtos
-6. Acompanhe todas as operações no dashboard
-
-## Notificações Implementadas
-
-- ✅ Novo pedido lançado (notifica admin)
-- ✅ Pedido enviado (notifica lojista)
-- ✅ Estoque baixo (notifica admin e lojista)
-- ✅ Novo produto sem localização (notifica admin)
-
-## Próximas Funcionalidades
+Funcionalidades planejadas para evolução do sistema:
 
 - Mapa visual do armazém
 - Relatórios de vendas e comissões
-- Integração com APIs de correios
-- Importação de pedidos via API
-- Impressão de etiquetas
-- Integração com WhatsApp/Telegram
+- Integração com APIs de frete
+- Importação automática de pedidos
+- Impressão de etiquetas logísticas
+- Integração com WhatsApp
+- Integração com Telegram
 
-## Suporte
+---
 
-Sistema desenvolvido para ATLAS LOGS - Gestão de Fulfillment Profissional
+# Objetivo do Projeto
+
+Este projeto foi desenvolvido como um sistema completo de gestão de fulfillment com foco em:
+
+- controle de estoque
+- fluxo de pedidos
+- separação logística
+- gestão de lojistas
+- notificações operacionais
+
+Ele também serve como estudo prático de arquitetura fullstack utilizando React, TypeScript e Supabase.
+
+---
+
+# Autor
+
+João Victor Queiroz Bezerra
+
+GitHub:
+```
+https://github.com/seuusuario
+```
