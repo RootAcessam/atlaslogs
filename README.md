@@ -269,5 +269,5 @@ João Victor Queiroz Bezerra
 
 GitHub:
 ```
-https://github.com/seuusuario
+https://github.com/joaovictorqb
 ```
